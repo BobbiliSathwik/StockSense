@@ -1,4 +1,17 @@
+# Python
 __pycache__/
 *.py[cod]
-.DS_Store
+*.pyo
+*.pyd
+
+# Odoo
 *.log
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+
+# Virtual environment
+.venv/
