@@ -18,15 +18,20 @@ adjustments and stock history.
 
     'data': [
         'security/ir.model.access.csv',
+
+        'views/category_views.xml',
+        'views/product_views.xml',
+        'views/warehouse_views.xml',
         'views/stocksense_app.xml',
+        'views/dashboard_views.xml',
     ],
 
     'assets': {
         'web.assets_backend': [
-            'stocksense/static/src/js/stocksense_app.js',
-            'stocksense/static/src/js/stocksense_3d.js',
-            'stocksense/static/src/xml/stocksense_app.xml',
-            'stocksense/static/src/css/stocksense_app.css',
+            'static/src/js/stocksense_app.js',
+            'static/src/js/stocksense_3d.js',
+            'static/src/xml/stocksense_app.xml',
+            'static/src/css/stocksense_app.css',
         ],
     },
 

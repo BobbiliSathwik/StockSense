@@ -1,4 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stocksense_category_user,stocksense.category.user,model_stocksense_category,base.group_user,1,1,1,1
 access_stocksense_product_user,stocksense.product.user,model_stocksense_product,base.group_user,1,1,1,1
 access_stocksense_warehouse_user,stocksense.warehouse.user,model_stocksense_warehouse,base.group_user,1,1,1,1
 access_stocksense_location_user,stocksense.location.user,model_stocksense_location,base.group_user,1,1,1,1
+access_stocksense_inventory_user,stocksense.inventory.user,model_stocksense_inventory,base.group_user,1,1,1,1
+access_stocksense_sale_user,stocksense.sale.user,model_stocksense_sale,base.group_user,1,1,1,1
+access_stocksense_alert_user,stocksense.alert.user,model_stocksense_alert,base.group_user,1,1,1,1
