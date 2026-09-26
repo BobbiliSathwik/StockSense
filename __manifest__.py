@@ -6,7 +6,7 @@
 StockSense - Inventory Management System for products,
 warehouses, receipts, deliveries, transfers,
 adjustments and stock history.
-    ''',
+''',
     'category': 'Inventory',
     'author': 'StockSense Team',
     'license': 'LGPL-3',
@@ -18,7 +18,6 @@ adjustments and stock history.
 
     'data': [
         'security/ir.model.access.csv',
-
         'views/category_views.xml',
         'views/product_views.xml',
         'views/warehouse_views.xml',
@@ -28,10 +27,8 @@ adjustments and stock history.
 
     'assets': {
         'web.assets_backend': [
-            'static/src/js/stocksense_app.js',
-            'static/src/js/stocksense_3d.js',
-            'static/src/xml/stocksense_app.xml',
-            'static/src/css/stocksense_app.css',
+            'stocksense/static/src/js/stocksense_app.js',
+            'stocksense/static/src/xml/stocksense_app.xml',
         ],
     },
 
