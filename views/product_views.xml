@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product List -->
+    <record id="view_stocksense_product_list" model="ir.ui.view">
+        <field name="name">stocksense.product.list</field>
+        <field name="model">stocksense.product</field>
+        <field name="arch" type="xml">
+            <list string="Products">
+                <field name="name"/>
+                <field name="sku"/>
+                <field name="category"/>
+                <field name="unit_of_measure"/>
+                <field name="initial_stock"/>
+                <field name="current_stock"/>
+                <field name="low_stock_threshold"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Product Form -->
+    <record id="view_stocksense_product_form" model="ir.ui.view">
+        <field name="name">stocksense.product.form</field>
+        <field name="model">stocksense.product</field>
+        <field name="arch" type="xml">
+            <form string="Product">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sku"/>
+                            <field name="category"/>
+                            <field name="unit_of_measure"/>
+                        </group>
+                        <group>
+                            <field name="initial_stock"/>
+                            <field name="current_stock"/>
+                            <field name="low_stock_threshold"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Product Action -->
+    <record id="action_stocksense_products" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">stocksense.product</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Main StockSense Menu -->
+    <menuitem
+        id="menu_stocksense_root"
+        name="StockSense"
+        sequence="10"/>
+
+    <!-- Products Menu -->
+    <menuitem
+        id="menu_stocksense_products"
+        name="Products"
+        parent="menu_stocksense_root"
+        action="action_stocksense_products"
+        sequence="10"/>
+
+</odoo>

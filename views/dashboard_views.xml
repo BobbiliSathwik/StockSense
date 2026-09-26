@@ -1,0 +1,127 @@
+<odoo>
+
+    <!-- Dashboard Template -->
+    <template id="stocksense_dashboard_template">
+        <div class="o_stocksense_dashboard p-4">
+
+            <div class="mb-4">
+                <h1>StockSense Dashboard</h1>
+                <p class="text-muted">
+                    Inventory overview and operations
+                </p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="row g-3 mb-4">
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-muted">Total Products</h6>
+                            <h2 t-esc="kpis.products"/>
+                            <small>Products in stock</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-muted">Low / Out of Stock</h6>
+                            <h2 t-esc="kpis.lowStock"/>
+                            <small>Items requiring attention</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-muted">Pending Receipts</h6>
+                            <h2 t-esc="kpis.receipts"/>
+                            <small>Incoming operations</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-muted">Pending Deliveries</h6>
+                            <h2 t-esc="kpis.deliveries"/>
+                            <small>Outgoing operations</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Transfers -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5>Internal Transfers Scheduled</h5>
+                    <h2 t-esc="kpis.transfers"/>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Inventory Filters</h5>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Document Type</label>
+                            <select class="form-select">
+                                <option>All</option>
+                                <option>Receipts</option>
+                                <option>Delivery</option>
+                                <option>Internal</option>
+                                <option>Adjustments</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select">
+                                <option>All</option>
+                                <option>Draft</option>
+                                <option>Waiting</option>
+                                <option>Ready</option>
+                                <option>Done</option>
+                                <option>Canceled</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Warehouse</label>
+                            <select class="form-select">
+                                <option>All Warehouses</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <select class="form-select">
+                                <option>All Locations</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Product Category</label>
+                            <select class="form-select">
+                                <option>All Categories</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+</odoo>

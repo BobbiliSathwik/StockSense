@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Warehouse List -->
+    <record id="view_stocksense_warehouse_list" model="ir.ui.view">
+        <field name="name">stocksense.warehouse.list</field>
+        <field name="model">stocksense.warehouse</field>
+        <field name="arch" type="xml">
+            <list string="Warehouses">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="address"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Warehouse Form -->
+    <record id="view_stocksense_warehouse_form" model="ir.ui.view">
+        <field name="name">stocksense.warehouse.form</field>
+        <field name="model">stocksense.warehouse</field>
+        <field name="arch" type="xml">
+            <form string="Warehouse">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="address"/>
+                        <field name="active"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Locations">
+                            <field name="location_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Location List -->
+    <record id="view_stocksense_location_list" model="ir.ui.view">
+        <field name="name">stocksense.location.list</field>
+        <field name="model">stocksense.location</field>
+        <field name="arch" type="xml">
+            <list string="Locations">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="warehouse_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Location Form -->
+    <record id="view_stocksense_location_form" model="ir.ui.view">
+        <field name="name">stocksense.location.form</field>
+        <field name="model">stocksense.location</field>
+        <field name="arch" type="xml">
+            <form string="Location">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="warehouse_id"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Warehouse Action -->
+    <record id="action_stocksense_warehouses" model="ir.actions.act_window">
+        <field name="name">Warehouses</field>
+        <field name="res_model">stocksense.warehouse</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Location Action -->
+    <record id="action_stocksense_locations" model="ir.actions.act_window">
+        <field name="name">Locations</field>
+        <field name="res_model">stocksense.location</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Warehouse Menu -->
+    <menuitem
+        id="menu_stocksense_warehouses"
+        name="Warehouses"
+        parent="menu_stocksense_root"
+        action="action_stocksense_warehouses"
+        sequence="20"/>
+
+    <!-- Location Menu -->
+    <menuitem
+        id="menu_stocksense_locations"
+        name="Locations"
+        parent="menu_stocksense_root"
+        action="action_stocksense_locations"
+        sequence="30"/>
+
+</odoo>
