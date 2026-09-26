@@ -1,0 +1,2555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+    <t t-name="stocksense.StockSenseApp">
+
+        <div class="ss-app">
+
+            <!-- =========================================================
+                 SIDEBAR
+            ========================================================== -->
+
+            <aside class="ss-sidebar">
+
+                <div class="ss-brand">
+                    <div class="ss-brand-icon">
+                        <i class="fa fa-cubes"/>
+                    </div>
+
+                    <div>
+                        <div class="ss-brand-name">StockSense</div>
+                        <div class="ss-brand-subtitle">Inventory Management</div>
+                    </div>
+                </div>
+
+
+                <div class="ss-nav-section">
+                    <div class="ss-nav-label">MAIN</div>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'dashboard' ? 'active' : '')"
+                        t-on-click="() => navigate('dashboard')">
+                        <i class="fa fa-dashboard"/>
+                        <span>Dashboard</span>
+                    </button>
+                </div>
+
+
+                <div class="ss-nav-section">
+                    <div class="ss-nav-label">INVENTORY</div>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'products' ? 'active' : '')"
+                        t-on-click="() => navigate('products')">
+                        <i class="fa fa-cube"/>
+                        <span>Products</span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'categories' ? 'active' : '')"
+                        t-on-click="() => navigate('categories')">
+                        <i class="fa fa-tags"/>
+                        <span>Categories</span>
+                    </button>
+                </div>
+
+
+                <div class="ss-nav-section">
+                    <div class="ss-nav-label">OPERATIONS</div>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'receipts' ? 'active' : '')"
+                        t-on-click="() => navigate('receipts')">
+                        <i class="fa fa-download"/>
+                        <span>Receipts</span>
+                        <span class="ss-nav-count">
+                            <t t-esc="pendingReceipts"/>
+                        </span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'deliveries' ? 'active' : '')"
+                        t-on-click="() => navigate('deliveries')">
+                        <i class="fa fa-upload"/>
+                        <span>Delivery Orders</span>
+                        <span class="ss-nav-count">
+                            <t t-esc="pendingDeliveries"/>
+                        </span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'transfers' ? 'active' : '')"
+                        t-on-click="() => navigate('transfers')">
+                        <i class="fa fa-exchange"/>
+                        <span>Internal Transfers</span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'adjustments' ? 'active' : '')"
+                        t-on-click="() => navigate('adjustments')">
+                        <i class="fa fa-sliders"/>
+                        <span>Adjustments</span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'history' ? 'active' : '')"
+                        t-on-click="() => navigate('history')">
+                        <i class="fa fa-history"/>
+                        <span>Move History</span>
+                    </button>
+                </div>
+
+
+                <div class="ss-nav-section">
+                    <div class="ss-nav-label">CONFIGURATION</div>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'warehouses' ? 'active' : '')"
+                        t-on-click="() => navigate('warehouses')">
+                        <i class="fa fa-building"/>
+                        <span>Warehouses</span>
+                    </button>
+
+                    <button
+                        t-att-class="'ss-nav-item ' + (state.activePage === 'locations' ? 'active' : '')"
+                        t-on-click="() => navigate('locations')">
+                        <i class="fa fa-map-marker"/>
+                        <span>Locations</span>
+                    </button>
+                </div>
+
+
+                <div class="ss-sidebar-bottom">
+
+                    <div class="ss-system-status">
+                        <span class="ss-status-dot"/>
+                        <div>
+                            <strong>System Online</strong>
+                            <small>StockSense</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =========================================================
+                 MAIN AREA
+            ========================================================== -->
+
+            <main class="ss-main">
+
+                <!-- TOPBAR -->
+
+                <header class="ss-topbar">
+
+                    <div class="ss-breadcrumb">
+                        <span>StockSense</span>
+                        <i class="fa fa-angle-right"/>
+                        <strong>
+                            <t t-esc="pageTitle"/>
+                        </strong>
+                    </div>
+
+
+                    <div class="ss-topbar-actions">
+
+                        <!-- Notifications -->
+
+                        <div class="ss-topbar-menu">
+
+                            <button
+                                class="ss-icon-button"
+                                t-on-click="toggleNotifications">
+
+                                <i class="fa fa-bell"/>
+
+                                <span class="ss-notification-dot"/>
+                            </button>
+
+
+                            <t t-if="state.showNotifications">
+
+                                <div class="ss-popover ss-notification-popover">
+
+                                    <div class="ss-popover-header">
+                                        <strong>Notifications</strong>
+                                        <span>3 new</span>
+                                    </div>
+
+                                    <div class="ss-notification-item">
+                                        <div class="ss-notification-icon warning">
+                                            <i class="fa fa-warning"/>
+                                        </div>
+                                        <div>
+                                            <strong>Low Stock</strong>
+                                            <p>Packaging Box is below reorder level.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="ss-notification-item">
+                                        <div class="ss-notification-icon info">
+                                            <i class="fa fa-truck"/>
+                                        </div>
+                                        <div>
+                                            <strong>Pending Receipt</strong>
+                                            <p>WH/IN/0002 is waiting.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="ss-notification-item">
+                                        <div class="ss-notification-icon success">
+                                            <i class="fa fa-check"/>
+                                        </div>
+                                        <div>
+                                            <strong>Transfer Completed</strong>
+                                            <p>WH/INT/0001 has been completed.</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </t>
+
+                        </div>
+
+
+                        <!-- Profile -->
+
+                        <div class="ss-topbar-menu">
+
+                            <button
+                                class="ss-profile-button"
+                                t-on-click="toggleProfile">
+
+                                <div class="ss-avatar">
+                                    S
+                                </div>
+
+                                <div class="ss-profile-text">
+                                    <strong>Inventory Manager</strong>
+                                    <small>Administrator</small>
+                                </div>
+
+                                <i class="fa fa-angle-down"/>
+
+                            </button>
+
+
+                            <t t-if="state.showProfile">
+
+                                <div class="ss-popover ss-profile-popover">
+
+                                    <div class="ss-profile-popover-user">
+
+                                        <div class="ss-avatar large">
+                                            S
+                                        </div>
+
+                                        <div>
+                                            <strong>Inventory Manager</strong>
+                                            <small>Administrator</small>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ss-popover-divider"/>
+
+                                    <button class="ss-popover-action">
+                                        <i class="fa fa-user"/>
+                                        My Profile
+                                    </button>
+
+                                    <button class="ss-popover-action">
+                                        <i class="fa fa-sign-out"/>
+                                        Logout
+                                    </button>
+
+                                </div>
+
+                            </t>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+
+                <!-- =====================================================
+                     PAGE CONTENT
+                ====================================================== -->
+
+                <section class="ss-content">
+
+
+                    <!-- =================================================
+                         DASHBOARD
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'dashboard'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Dashboard</h1>
+                                <p>Monitor your inventory and stock operations.</p>
+                            </div>
+
+                            <div class="ss-page-actions">
+
+                                <button
+                                    class="ss-button secondary"
+                                    t-on-click="clearFilters">
+                                    <i class="fa fa-refresh"/>
+                                    Refresh
+                                </button>
+
+                                <button
+                                    class="ss-button primary"
+                                    t-on-click="() => openModal('product')">
+                                    <i class="fa fa-plus"/>
+                                    Add Product
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- KPI CARDS -->
+
+                        <div class="ss-kpi-grid">
+
+                            <div class="ss-kpi-card blue">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-cubes"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Total Products</span>
+                                    <strong>
+                                        <t t-esc="formatNumber(totalProducts)"/>
+                                    </strong>
+                                    <small>Products in inventory</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ss-kpi-card orange">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-warning"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Low Stock</span>
+                                    <strong>
+                                        <t t-esc="lowStockProducts"/>
+                                    </strong>
+                                    <small>Need attention</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ss-kpi-card red">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-times-circle"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Out of Stock</span>
+                                    <strong>
+                                        <t t-esc="outOfStockProducts"/>
+                                    </strong>
+                                    <small>Currently unavailable</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ss-kpi-card purple">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-download"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Pending Receipts</span>
+                                    <strong>
+                                        <t t-esc="pendingReceipts"/>
+                                    </strong>
+                                    <small>Incoming operations</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ss-kpi-card green">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-upload"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Pending Deliveries</span>
+                                    <strong>
+                                        <t t-esc="pendingDeliveries"/>
+                                    </strong>
+                                    <small>Outgoing operations</small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ss-kpi-card teal">
+
+                                <div class="ss-kpi-icon">
+                                    <i class="fa fa-exchange"/>
+                                </div>
+
+                                <div class="ss-kpi-content">
+                                    <span>Internal Transfers</span>
+                                    <strong>
+                                        <t t-esc="pendingTransfers"/>
+                                    </strong>
+                                    <small>Scheduled movements</small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DASHBOARD GRID -->
+
+                        <div class="ss-dashboard-grid">
+
+
+                            <!-- Inventory Overview -->
+
+                            <div class="ss-card ss-inventory-card">
+
+                                <div class="ss-card-header">
+
+                                    <div>
+                                        <h2>Inventory Overview</h2>
+                                        <p>Current stock levels</p>
+                                    </div>
+
+                                    <button
+                                        class="ss-text-button"
+                                        t-on-click="() => navigate('products')">
+                                        View All
+                                        <i class="fa fa-arrow-right"/>
+                                    </button>
+
+                                </div>
+
+
+                                <div class="ss-inventory-list">
+
+                                    <t t-foreach="state.products" t-as="product" t-key="product.id">
+
+                                        <div class="ss-inventory-row">
+
+                                            <div class="ss-product-avatar">
+                                                <i class="fa fa-cube"/>
+                                            </div>
+
+                                            <div class="ss-product-info">
+                                                <strong>
+                                                    <t t-esc="product.name"/>
+                                                </strong>
+
+                                                <span>
+                                                    <t t-esc="product.sku"/>
+                                                </span>
+                                            </div>
+
+                                            <div class="ss-stock-info">
+
+                                                <div class="ss-stock-number">
+                                                    <strong>
+                                                        <t t-esc="product.stock"/>
+                                                    </strong>
+                                                    <span>
+                                                        <t t-esc="product.unit"/>
+                                                    </span>
+                                                </div>
+
+                                                <div class="ss-progress">
+                                                    <div
+                                                        class="ss-progress-bar"
+                                                        t-att-class="getStockClass(product)"
+                                                        t-att-style="'width: ' + Math.min((product.stock / Math.max(product.reorder * 3, 1)) * 100, 100) + '%'">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <span t-att-class="'ss-stock-badge ' + getStockClass(product)">
+
+                                                <t t-if="product.stock &lt;= 0">
+                                                    Out of Stock
+                                                </t>
+
+                                                <t t-elif="product.stock &lt;= product.reorder">
+                                                    Low Stock
+                                                </t>
+
+                                                <t t-else="">
+                                                    In Stock
+                                                </t>
+
+                                            </span>
+
+                                        </div>
+
+                                    </t>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Operations Summary -->
+
+                            <div class="ss-card">
+
+                                <div class="ss-card-header">
+
+                                    <div>
+                                        <h2>Operations Summary</h2>
+                                        <p>Today's activity</p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-operation-summary">
+
+                                    <div class="ss-operation-box incoming">
+
+                                        <div class="ss-operation-icon">
+                                            <i class="fa fa-arrow-down"/>
+                                        </div>
+
+                                        <div>
+                                            <span>To Receive</span>
+                                            <strong>
+                                                <t t-esc="pendingReceipts"/>
+                                            </strong>
+                                            <small>Incoming operations</small>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="ss-operation-box outgoing">
+
+                                        <div class="ss-operation-icon">
+                                            <i class="fa fa-arrow-up"/>
+                                        </div>
+
+                                        <div>
+                                            <span>To Deliver</span>
+                                            <strong>
+                                                <t t-esc="pendingDeliveries"/>
+                                            </strong>
+                                            <small>Outgoing operations</small>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="ss-operation-box transfer">
+
+                                        <div class="ss-operation-icon">
+                                            <i class="fa fa-exchange"/>
+                                        </div>
+
+                                        <div>
+                                            <span>Transfers</span>
+                                            <strong>
+                                                <t t-esc="pendingTransfers"/>
+                                            </strong>
+                                            <small>Internal movements</small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RECENT MOVEMENTS -->
+
+                        <div class="ss-card">
+
+                            <div class="ss-card-header">
+
+                                <div>
+                                    <h2>Recent Stock Movements</h2>
+                                    <p>Latest inventory activity</p>
+                                </div>
+
+                                <button
+                                    class="ss-text-button"
+                                    t-on-click="() => navigate('history')">
+                                    View History
+                                    <i class="fa fa-arrow-right"/>
+                                </button>
+
+                            </div>
+
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Date</th>
+                                            <th>Contact</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="state.history.slice(0, 5)" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.contact"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.from"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.to"/>
+                                                </td>
+
+                                                <td>
+
+                                                    <span
+                                                        t-att-class="'ss-quantity ' + item.direction">
+
+                                                        <t t-if="item.direction === 'in'">+</t>
+                                                        <t t-if="item.direction === 'out'">-</t>
+
+                                                        <t t-esc="item.quantity.replace('+', '').replace('-', '')"/>
+
+                                                    </span>
+
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         PRODUCTS
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'products'">
+
+                        <div class="ss-page-header">
+                            <div>
+                                <div class="ss-eyebrow">INVENTORY CONTROL</div>
+                                <h1>Products</h1>
+                                <p>Manage products, stock levels and reorder rules.</p>
+                            </div>
+                            <button class="ss-button primary" t-on-click="() => openModal('product')">
+                                <i class="fa fa-plus"/>
+                                New Product
+                            </button>
+                        </div>
+
+                        <div class="ss-toolbar">
+                            <div class="ss-search">
+                                <i class="fa fa-search"/>
+                                <input
+                                    type="text"
+                                    placeholder="Search products, SKU or category..."
+                                    t-model="state.search"
+                                />
+                            </div>
+
+                            <select t-model="state.categoryFilter">
+                                <option value="All">All Categories</option>
+                                <t t-foreach="state.categories" t-as="category" t-key="category.id">
+                                    <option t-att-value="category.name">
+                                        <t t-esc="category.name"/>
+                                    </option>
+                                </t>
+                            </select>
+
+                            <select t-model="state.productStockFilter">
+                                <option value="All">All Stock</option>
+                                <option value="In Stock">In Stock</option>
+                                <option value="Low Stock">Low Stock</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+
+                            <button class="ss-button secondary" t-on-click="clearFilters">
+                                <i class="fa fa-refresh"/>
+                                Reset
+                            </button>
+                        </div>
+
+                        <div class="ss-kpi-grid">
+                            <div class="ss-kpi-card">
+                                <div class="ss-kpi-icon"><i class="fa fa-cubes"/></div>
+                                <div class="ss-kpi-content">
+                                    <span>TOTAL PRODUCTS</span>
+                                    <strong><t t-esc="totalProducts"/></strong>
+                                    <small>Active inventory items</small>
+                                </div>
+                            </div>
+
+                            <div class="ss-kpi-card">
+                                <div class="ss-kpi-icon"><i class="fa fa-check-circle"/></div>
+                                <div class="ss-kpi-content">
+                                    <span>IN STOCK</span>
+                                    <strong>
+                                        <t t-esc="totalProducts - lowStockProducts - outOfStockProducts"/>
+                                    </strong>
+                                    <small>Healthy stock level</small>
+                                </div>
+                            </div>
+
+                            <div class="ss-kpi-card">
+                                <div class="ss-kpi-icon"><i class="fa fa-exclamation-triangle"/></div>
+                                <div class="ss-kpi-content">
+                                    <span>LOW STOCK</span>
+                                    <strong><t t-esc="lowStockProducts"/></strong>
+                                    <small>Reorder recommended</small>
+                                </div>
+                            </div>
+
+                            <div class="ss-kpi-card">
+                                <div class="ss-kpi-icon"><i class="fa fa-times-circle"/></div>
+                                <div class="ss-kpi-content">
+                                    <span>OUT OF STOCK</span>
+                                    <strong><t t-esc="outOfStockProducts"/></strong>
+                                    <small>Immediate attention</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ss-card">
+                            <div class="ss-card-header">
+                                <div>
+                                    <h2>Product Inventory</h2>
+                                    <p><t t-esc="filteredProducts.length"/> products displayed</p>
+                                </div>
+                                <div class="ss-card-header-meta">
+                                    <span class="ss-live-dot"></span>
+                                    Live Inventory
+                                </div>
+                            </div>
+
+                            <div class="ss-table-wrapper">
+                                <table class="ss-table">
+                                    <thead>
+                                        <tr>
+                                            <th>PRODUCT</th>
+                                            <th>SKU</th>
+                                            <th>CATEGORY</th>
+                                            <th>UNIT</th>
+                                            <th>ON HAND</th>
+                                            <th>RESERVED</th>
+                                            <th>FREE TO USE</th>
+                                            <th>STATUS</th>
+                                            <th>ACTIONS</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <t t-if="filteredProducts.length">
+                                            <t t-foreach="filteredProducts" t-as="product" t-key="product.id">
+                                                <tr>
+                                                    <td>
+                                                        <div class="ss-product-cell">
+                                                            <div class="ss-product-avatar">
+                                                                <t t-esc="product.name.charAt(0).toUpperCase()"/>
+                                                            </div>
+                                                            <div>
+                                                                <strong><t t-esc="product.name"/></strong>
+                                                                <span>Inventory Item</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="ss-mono"><t t-esc="product.sku"/></span>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="ss-category-badge"><t t-esc="product.category"/></span>
+                                                    </td>
+
+                                                    <td><span><t t-esc="product.unit"/></span></td>
+
+                                                    <td>
+                                                        <strong class="ss-number">
+                                                            <t t-esc="formatNumber(product.stock)"/>
+                                                        </strong>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="ss-muted-number">
+                                                            <t t-esc="formatNumber(product.reserved)"/>
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <strong>
+                                                            <t t-esc="formatNumber(getFreeStock(product))"/>
+                                                        </strong>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="ss-status-badge" t-att-class="getStockClass(product)">
+                                                            <span class="ss-status-dot"></span>
+                                                            <t t-esc="getProductStockStatus(product)"/>
+                                                        </span>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="ss-product-actions">
+                                                            <button
+                                                                class="ss-icon-button"
+                                                                title="View Product"
+                                                                t-on-click="() => viewProduct(product)"
+                                                            >
+                                                                <i class="fa fa-eye"/>
+                                                            </button>
+                                                            <button
+                                                                class="ss-icon-button"
+                                                                title="Edit Product"
+                                                                t-on-click="() => editProduct(product)"
+                                                            >
+                                                                <i class="fa fa-pencil"/>
+                                                            </button>
+                                                            <button
+                                                                class="ss-icon-button danger"
+                                                                title="Delete Product"
+                                                                t-on-click="() => deleteProduct(product)"
+                                                            >
+                                                                <i class="fa fa-trash"/>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+
+                                        <t t-else="">
+                                            <tr>
+                                                <td colspan="9" class="ss-empty-state">
+                                                    <div>
+                                                        <div class="ss-empty-icon">
+                                                            <i class="fa fa-search"/>
+                                                        </div>
+                                                        <h3>No products found</h3>
+                                                        <p>Try changing your search or filters.</p>
+                                                        <button class="ss-button secondary" t-on-click="clearFilters">
+                                                            Clear Filters
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- NEW / EDIT PRODUCT MODAL -->
+                        <t t-if="state.modal === 'product' || state.modal === 'product-edit'">
+                            <div class="ss-modal-overlay">
+                                <div class="ss-modal">
+                                    <div class="ss-modal-header">
+                                        <div>
+                                            <div class="ss-eyebrow">PRODUCT MANAGEMENT</div>
+                                            <h2>
+                                                <t t-if="state.modal === 'product-edit'">Edit Product</t>
+                                                <t t-else="">New Product</t>
+                                            </h2>
+                                            <p>
+                                                <t t-if="state.modal === 'product-edit'">
+                                                    Update product and inventory information.
+                                                </t>
+                                                <t t-else="">
+                                                    Create a new inventory product.
+                                                </t>
+                                            </p>
+                                        </div>
+                                        <button class="ss-modal-close" t-on-click="closeModal">
+                                            <i class="fa fa-times"/>
+                                        </button>
+                                    </div>
+
+                                    <t t-if="state.productError">
+                                        <div class="ss-form-error">
+                                            <i class="fa fa-exclamation-circle"/>
+                                            <span><t t-esc="state.productError"/></span>
+                                        </div>
+                                    </t>
+
+                                    <form class="ss-form" t-on-submit="onSubmitForm">
+                                        <div class="ss-form-grid">
+                                            <div class="ss-form-group full">
+                                                <label>Product Name</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter product name"
+                                                    t-model="state.productForm.name"
+                                                    required="required"
+                                                />
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>SKU / Code</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="e.g. STL-001"
+                                                    t-model="state.productForm.sku"
+                                                    required="required"
+                                                />
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>Category</label>
+                                                <select t-model="state.productForm.category">
+                                                    <t t-foreach="state.categories" t-as="category" t-key="category.id">
+                                                        <option t-att-value="category.name">
+                                                            <t t-esc="category.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>Unit of Measure</label>
+                                                <select t-model="state.productForm.unit">
+                                                    <option value="Units">Units</option>
+                                                    <option value="Kg">Kg</option>
+                                                    <option value="Liters">Liters</option>
+                                                    <option value="Boxes">Boxes</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>On Hand Stock</label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    placeholder="0"
+                                                    t-model="state.productForm.stock"
+                                                />
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>Reserved Stock</label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    placeholder="0"
+                                                    t-model="state.productForm.reserved"
+                                                />
+                                            </div>
+
+                                            <div class="ss-form-group">
+                                                <label>Reorder Level</label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    placeholder="0"
+                                                    t-model="state.productForm.reorder"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="ss-modal-footer">
+                                            <button type="button" class="ss-button secondary" t-on-click="closeModal">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="ss-button primary">
+                                                <t t-if="state.modal === 'product-edit'">
+                                                    <i class="fa fa-save"/>
+                                                    Save Changes
+                                                </t>
+                                                <t t-else="">
+                                                    <i class="fa fa-plus"/>
+                                                    Create Product
+                                                </t>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- PRODUCT VIEW MODAL -->
+                        <t t-if="state.modal === 'product-view' &amp;&amp; state.productView">
+                            <div class="ss-modal-overlay">
+                                <div class="ss-modal">
+                                    <div class="ss-modal-header">
+                                        <div>
+                                            <div class="ss-eyebrow">PRODUCT DETAILS</div>
+                                            <h2>Product Overview</h2>
+                                            <p>Inventory and stock information.</p>
+                                        </div>
+                                        <button class="ss-modal-close" t-on-click="closeModal">
+                                            <i class="fa fa-times"/>
+                                        </button>
+                                    </div>
+
+                                    <div class="ss-product-detail">
+                                        <div class="ss-product-detail-hero">
+                                            <div class="ss-product-avatar large">
+                                                <t t-esc="state.productView.name.charAt(0).toUpperCase()"/>
+                                            </div>
+                                            <div>
+                                                <h3><t t-esc="state.productView.name"/></h3>
+                                                <p>
+                                                    <span class="ss-mono">
+                                                        <t t-esc="state.productView.sku"/>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="ss-product-detail-grid">
+                                            <div>
+                                                <span>Category</span>
+                                                <strong><t t-esc="state.productView.category"/></strong>
+                                            </div>
+                                            <div>
+                                                <span>Unit</span>
+                                                <strong><t t-esc="state.productView.unit"/></strong>
+                                            </div>
+                                            <div>
+                                                <span>On Hand</span>
+                                                <strong><t t-esc="formatNumber(state.productView.stock)"/></strong>
+                                            </div>
+                                            <div>
+                                                <span>Reserved</span>
+                                                <strong><t t-esc="formatNumber(state.productView.reserved)"/></strong>
+                                            </div>
+                                            <div>
+                                                <span>Free To Use</span>
+                                                <strong><t t-esc="formatNumber(getFreeStock(state.productView))"/></strong>
+                                            </div>
+                                            <div>
+                                                <span>Reorder Level</span>
+                                                <strong><t t-esc="formatNumber(state.productView.reorder)"/></strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="ss-product-detail-status">
+                                            <span>Current Stock Status</span>
+                                            <span class="ss-status-badge" t-att-class="getStockClass(state.productView)">
+                                                <span class="ss-status-dot"></span>
+                                                <t t-esc="getProductStockStatus(state.productView)"/>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="ss-modal-footer">
+                                        <button type="button" class="ss-button secondary" t-on-click="closeModal">
+                                            Close
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="ss-button primary"
+                                            t-on-click="() => editProduct(state.productView)"
+                                        >
+                                            <i class="fa fa-pencil"/>
+                                            Edit Product
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                    </t>
+                    <t t-if="state.activePage === 'categories'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Categories</h1>
+                                <p>Organize products into inventory categories.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('category')">
+                                <i class="fa fa-plus"/>
+                                New Category
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Products</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="state.categories" t-as="category" t-key="category.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong>
+                                                        <t t-esc="category.name"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="category.products"/>
+                                                </td>
+
+                                                <td>
+                                                    <span class="ss-status status-done">
+                                                        Active
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         RECEIPTS
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'receipts'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Receipts</h1>
+                                <p>Manage incoming inventory operations.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('receipt')">
+                                <i class="fa fa-plus"/>
+                                New Receipt
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-toolbar">
+
+                            <div class="ss-search">
+
+                                <i class="fa fa-search"/>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search reference or contact..."
+                                    t-model="state.search"
+                                />
+
+                            </div>
+
+
+                            <select t-model="state.statusFilter">
+
+                                <option value="All">All Statuses</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Waiting">Waiting</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Done">Done</option>
+                                <option value="Canceled">Canceled</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Contact</th>
+                                            <th>Schedule Date</th>
+                                            <th>Items</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="filteredReceipts" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.from"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.to"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.contact"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.items"/>
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         DELIVERIES
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'deliveries'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Delivery Orders</h1>
+                                <p>Manage outgoing inventory operations.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('delivery')">
+                                <i class="fa fa-plus"/>
+                                New Delivery
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-toolbar">
+
+                            <div class="ss-search">
+
+                                <i class="fa fa-search"/>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search reference or contact..."
+                                    t-model="state.search"
+                                />
+
+                            </div>
+
+
+                            <select t-model="state.statusFilter">
+
+                                <option value="All">All Statuses</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Waiting">Waiting</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Done">Done</option>
+                                <option value="Canceled">Canceled</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Contact</th>
+                                            <th>Schedule Date</th>
+                                            <th>Items</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="filteredDeliveries" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.from"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.to"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.contact"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.items"/>
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         INTERNAL TRANSFERS
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'transfers'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Internal Transfers</h1>
+                                <p>Move inventory between internal locations.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('transfer')">
+                                <i class="fa fa-plus"/>
+                                New Transfer
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="filteredTransfers" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.from"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.to"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.items"/>
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         ADJUSTMENTS
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'adjustments'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Inventory Adjustments</h1>
+                                <p>Correct recorded quantities against physical stock.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('adjustment')">
+                                <i class="fa fa-plus"/>
+                                New Adjustment
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Product</th>
+                                            <th>Location</th>
+                                            <th>Recorded</th>
+                                            <th>Counted</th>
+                                            <th>Difference</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="filteredAdjustments" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.product"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.location"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.recorded"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.counted"/>
+                                                </td>
+
+                                                <td>
+
+                                                    <span t-att-class="item.difference &lt; 0 ? 'ss-quantity out' : 'ss-quantity in'">
+
+                                                        <t t-if="item.difference &gt; 0">+</t>
+
+                                                        <t t-esc="item.difference"/>
+
+                                                    </span>
+
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         MOVE HISTORY
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'history'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Move History</h1>
+                                <p>Complete stock movement ledger.</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="ss-toolbar">
+
+                            <div class="ss-search">
+
+                                <i class="fa fa-search"/>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search reference, contact or location..."
+                                    t-model="state.search"
+                                />
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Date</th>
+                                            <th>Contact</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="filteredHistory" t-as="item" t-key="item.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong class="ss-reference">
+                                                        <t t-esc="item.reference"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.date"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.contact"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.from"/>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="item.to"/>
+                                                </td>
+
+                                                <td>
+
+                                                    <span
+                                                        t-att-class="'ss-quantity ' + item.direction">
+
+                                                        <t t-esc="item.quantity"/>
+
+                                                    </span>
+
+                                                </td>
+
+                                                <td>
+                                                    <span t-att-class="'ss-status ' + getStatusClass(item.status)">
+                                                        <t t-esc="item.status"/>
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         WAREHOUSES
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'warehouses'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Warehouses</h1>
+                                <p>Manage your inventory warehouses.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('warehouse')">
+                                <i class="fa fa-plus"/>
+                                New Warehouse
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-warehouse-grid">
+
+                            <t t-foreach="state.warehouses" t-as="warehouse" t-key="warehouse.id">
+
+                                <div class="ss-warehouse-card">
+
+                                    <div class="ss-warehouse-header">
+
+                                        <div class="ss-warehouse-icon">
+                                            <i class="fa fa-building"/>
+                                        </div>
+
+                                        <span class="ss-status status-done">
+                                            Active
+                                        </span>
+
+                                    </div>
+
+
+                                    <h3>
+                                        <t t-esc="warehouse.name"/>
+                                    </h3>
+
+                                    <span class="ss-code">
+                                        <t t-esc="warehouse.code"/>
+                                    </span>
+
+                                    <p class="ss-warehouse-address">
+                                        <i class="fa fa-map-marker"/>
+                                        <t t-esc="warehouse.address"/>
+                                    </p>
+
+
+                                    <div class="ss-warehouse-stats">
+
+                                        <div>
+                                            <strong>
+                                                <t t-esc="warehouse.locations"/>
+                                            </strong>
+                                            <span>Locations</span>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                <t t-esc="warehouse.products"/>
+                                            </strong>
+                                            <span>Products</span>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </t>
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- =================================================
+                         LOCATIONS
+                    ================================================== -->
+
+                    <t t-if="state.activePage === 'locations'">
+
+                        <div class="ss-page-header">
+
+                            <div>
+                                <h1>Locations</h1>
+                                <p>Manage warehouse storage locations.</p>
+                            </div>
+
+                            <button
+                                class="ss-button primary"
+                                t-on-click="() => openModal('location')">
+                                <i class="fa fa-plus"/>
+                                New Location
+                            </button>
+
+                        </div>
+
+
+                        <div class="ss-card">
+
+                            <div class="ss-table-wrapper">
+
+                                <table class="ss-table">
+
+                                    <thead>
+
+                                        <tr>
+                                            <th>Location</th>
+                                            <th>Short Code</th>
+                                            <th>Warehouse</th>
+                                            <th>Status</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        <t t-foreach="state.locations" t-as="location" t-key="location.id">
+
+                                            <tr>
+
+                                                <td>
+                                                    <strong>
+                                                        <t t-esc="location.name"/>
+                                                    </strong>
+                                                </td>
+
+                                                <td>
+                                                    <span class="ss-code">
+                                                        <t t-esc="location.code"/>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <t t-esc="location.warehouse"/>
+                                                </td>
+
+                                                <td>
+                                                    <span class="ss-status status-done">
+                                                        Active
+                                                    </span>
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+
+                </section>
+
+            </main>
+
+
+            <!-- =========================================================
+                 MODALS
+            ========================================================== -->
+
+            <t t-if="state.modal">
+
+                <div class="ss-modal-backdrop" t-on-click="closeModal">
+
+                    <div class="ss-modal" t-on-click.stop="() => {}">
+
+
+                        <!-- PRODUCT MODAL -->
+
+                        <t t-if="state.modal === 'product'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Product</h2>
+                                    <p>Create a new inventory product.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group full">
+                                        <label>Product Name</label>
+                                        <input type="text" placeholder="Enter product name" required="required"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>SKU / Code</label>
+                                        <input type="text" placeholder="e.g. STL-001"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Category</label>
+                                        <select>
+                                            <option>Raw Material</option>
+                                            <option>Furniture</option>
+                                            <option>Electronics</option>
+                                            <option>Packaging</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Unit of Measure</label>
+                                        <select>
+                                            <option>Units</option>
+                                            <option>Kg</option>
+                                            <option>Liters</option>
+                                            <option>Boxes</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Initial Stock</label>
+                                        <input type="number" min="0" placeholder="0"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Reorder Level</label>
+                                        <input type="number" min="0" placeholder="0"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Product
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- CATEGORY MODAL -->
+
+                        <t t-if="state.modal === 'category'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Category</h2>
+                                    <p>Create a product category.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-group">
+
+                                    <label>Category Name</label>
+
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Raw Material"
+                                        required="required"/>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Category
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- RECEIPT MODAL -->
+
+                        <t t-if="state.modal === 'receipt'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Receipt</h2>
+                                    <p>Create an incoming stock operation.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>From</label>
+                                        <input type="text" placeholder="Supplier"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>To</label>
+                                        <select>
+                                            <option>Main Warehouse</option>
+                                            <option>Electronics Store</option>
+                                            <option>Production Warehouse</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Contact</label>
+                                        <input type="text" placeholder="Supplier contact"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Schedule Date</label>
+                                        <input type="date"/>
+                                    </div>
+
+                                    <div class="ss-form-group full">
+                                        <label>Product</label>
+                                        <select>
+                                            <t t-foreach="state.products" t-as="product" t-key="product.id">
+                                                <option t-att-value="product.id">
+                                                    <t t-esc="product.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Quantity</label>
+                                        <input type="number" min="1" placeholder="0"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Receipt
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- DELIVERY MODAL -->
+
+                        <t t-if="state.modal === 'delivery'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Delivery Order</h2>
+                                    <p>Create an outgoing stock operation.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>From</label>
+                                        <select>
+                                            <option>Main Warehouse</option>
+                                            <option>Electronics Store</option>
+                                            <option>Production Warehouse</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Delivery Address</label>
+                                        <input type="text" placeholder="Customer address"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Contact</label>
+                                        <input type="text" placeholder="Customer"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Schedule Date</label>
+                                        <input type="date"/>
+                                    </div>
+
+                                    <div class="ss-form-group full">
+                                        <label>Product</label>
+                                        <select>
+                                            <t t-foreach="state.products" t-as="product" t-key="product.id">
+                                                <option t-att-value="product.id">
+                                                    <t t-esc="product.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Quantity</label>
+                                        <input type="number" min="1" placeholder="0"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Delivery
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- TRANSFER MODAL -->
+
+                        <t t-if="state.modal === 'transfer'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Internal Transfer</h2>
+                                    <p>Move stock between internal locations.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>From Location</label>
+                                        <select>
+                                            <t t-foreach="state.locations" t-as="location" t-key="location.id">
+                                                <option t-att-value="location.id">
+                                                    <t t-esc="location.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>To Location</label>
+                                        <select>
+                                            <t t-foreach="state.locations" t-as="location" t-key="location.id">
+                                                <option t-att-value="location.id">
+                                                    <t t-esc="location.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Product</label>
+                                        <select>
+                                            <t t-foreach="state.products" t-as="product" t-key="product.id">
+                                                <option t-att-value="product.id">
+                                                    <t t-esc="product.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Quantity</label>
+                                        <input type="number" min="1" placeholder="0"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Transfer
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- ADJUSTMENT MODAL -->
+
+                        <t t-if="state.modal === 'adjustment'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>Inventory Adjustment</h2>
+                                    <p>Correct physical stock quantities.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>Product</label>
+                                        <select>
+                                            <t t-foreach="state.products" t-as="product" t-key="product.id">
+                                                <option t-att-value="product.id">
+                                                    <t t-esc="product.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Location</label>
+                                        <select>
+                                            <t t-foreach="state.locations" t-as="location" t-key="location.id">
+                                                <option t-att-value="location.id">
+                                                    <t t-esc="location.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Counted Quantity</label>
+                                        <input type="number" min="0" placeholder="0"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Apply Adjustment
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- WAREHOUSE MODAL -->
+
+                        <t t-if="state.modal === 'warehouse'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Warehouse</h2>
+                                    <p>Add an inventory warehouse.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>Warehouse Name</label>
+                                        <input type="text" placeholder="Main Warehouse"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Short Code</label>
+                                        <input type="text" placeholder="WH01"/>
+                                    </div>
+
+                                    <div class="ss-form-group full">
+                                        <label>Address</label>
+                                        <input type="text" placeholder="Warehouse address"/>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Warehouse
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                        <!-- LOCATION MODAL -->
+
+                        <t t-if="state.modal === 'location'">
+
+                            <div class="ss-modal-header">
+
+                                <div>
+                                    <h2>New Location</h2>
+                                    <p>Add a warehouse storage location.</p>
+                                </div>
+
+                                <button class="ss-modal-close" t-on-click="closeModal">
+                                    <i class="fa fa-times"/>
+                                </button>
+
+                            </div>
+
+
+                            <form class="ss-form" t-on-submit="onSubmitForm">
+
+                                <div class="ss-form-grid">
+
+                                    <div class="ss-form-group">
+                                        <label>Location Name</label>
+                                        <input type="text" placeholder="Rack A"/>
+                                    </div>
+
+                                    <div class="ss-form-group">
+                                        <label>Short Code</label>
+                                        <input type="text" placeholder="R-A"/>
+                                    </div>
+
+                                    <div class="ss-form-group full">
+                                        <label>Warehouse</label>
+                                        <select>
+                                            <t t-foreach="state.warehouses" t-as="warehouse" t-key="warehouse.id">
+                                                <option t-att-value="warehouse.id">
+                                                    <t t-esc="warehouse.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ss-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="ss-button secondary"
+                                        t-on-click="closeModal">
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="ss-button primary">
+                                        Create Location
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </t>
+
+
+                    </div>
+
+                </div>
+
+            </t>
+
+        </div>
+
+    </t>
+
+</templates>
